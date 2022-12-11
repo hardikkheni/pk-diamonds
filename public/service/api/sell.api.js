@@ -1,7 +1,8 @@
 module.exports = {
   async 'sell.insert'(event, obj) {
     try {
-      const [id] = await global.knex('sells').insert(obj);
+      const { id: _id, ...insert } = obj;
+      const [id] = await global.knex('sells').insert(insert);
       const row = await global.knex('sells').where('id', id).first();
       event.reply('sell.insert', row);
     } catch (err) {

@@ -2,7 +2,8 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 
 const path = require('path');
 const isDev = require('electron-is-dev');
-const handlers = require('../service/api');
+const unhandled = require('electron-unhandled');
+const handlers = require('./service/api');
 
 const knex = require('knex')({
   client: 'sqlite',
@@ -15,7 +16,7 @@ const knex = require('knex')({
     max: 10,
   },
   migrations: {
-    directory: './service/migration',
+    directory: path.join(__dirname, './service/migration'),
     tableName: 'migrations',
   },
 });
@@ -23,12 +24,13 @@ const knex = require('knex')({
 global.knex = knex;
 
 async function createWindow() {
+  unhandled();
   await knex.migrate.latest();
   const win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, '../service/preload.js'),
+      preload: path.join(__dirname, './service/preload.js'),
     },
   });
 
@@ -43,14 +45,30 @@ async function createWindow() {
   }
 }
 
-app.on('ready', createWindow);
+app.whenReady().then(() => {
+  createWindow();
 
-app.on('window-all-closed', function () {
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on('activate', function () {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
-});
+// app.on('ready', createWindow);
+
+// app.on('window-all-closed', function () {
+//   if (process.platform !== 'darwin') {
+//     app.quit();
+//   }
+// });
+
+// app.on('activate', function () {
+//   if (BrowserWindow.getAllWindows().length === 0) createWindow();
+// });

@@ -17,6 +17,7 @@
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.7",
     "electron-is-dev": "^2.0.0",
+    "electron-unhandled": "^4.0.1",
     "knex": "^2.3.0",
     "mui-datatables": "^4.2.2",
     "react": "^18.2.0",
@@ -34,21 +35,27 @@
     "eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\"",
     "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js",
-    "electron:start": "nodemon --exec \"wait-on http://127.0.0.1:3000 && electron .\" --watch public/main.js --watch service",
-    "postinstall": "electron-rebuild",
+    "electron:start": "nodemon --exec \"wait-on http://127.0.0.1:3000 && electron .\" --watch public/main.js --watch public/service",
+    "postinstall": "electron-builder install-app-deps",
     "knex": "knex --knexfile knexfile.js"
   },
   "build": {
-    "extends": null,
-    "appId": "com.pk-diamonds.app",
+    "productName": "PK Diamonds",
+    "copyright": "Copyright © 2022 PK Diamonds",
+    "appId": "com.pkdiamonds.app",
     "files": [
-      "service/**/*",
-      "dist/**/*",
-      "build/**/*",
-      "node_modules/**/*",
-      "package.json"
+      "node_modules/**/*"
     ],
-    "directories": {
+    "extraResources": [
+      {
+        "from": "./src/service/",
+        "to": "./build",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories":{
       "buildResources": "assets"
     }
   },

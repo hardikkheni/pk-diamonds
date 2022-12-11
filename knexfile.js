@@ -1,4 +1,4 @@
-// Update with your config settings.
+const path = require('path');
 
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
@@ -13,7 +13,7 @@ module.exports = {
     max: 10,
   },
   migrations: {
-    directory: './service/migration',
+    directory: path.join(__dirname, './public/service/migration'),
     tableName: 'migrations',
   },
   useNullAsDefault: true,

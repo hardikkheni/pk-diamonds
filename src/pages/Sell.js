@@ -42,7 +42,7 @@ export default function Sell() {
   const tableRef = createRef(null);
 
   const drawPage = useCallback(async ({ page, limit }) => {
-    const { rows, total } = await window.api.call('buy.paginate', {
+    const { rows, total } = await window.api.call('sell.paginate', {
       page,
       limit,
     });
@@ -58,7 +58,7 @@ export default function Sell() {
 
   const handleDeleteClick = useCallback(
     async (cRow) => {
-      await window.api.call('buy.delete', cRow.id);
+      await window.api.call('sell.delete', cRow.id);
       refreshTable();
     },
     [refreshTable]
@@ -78,7 +78,7 @@ export default function Sell() {
 
   const handleSaveClick = useCallback(async () => {
     if (row.id) {
-      await window.api.call('buy.update', {
+      await window.api.call('sell.update', {
         id: row.id,
         obj: {
           ...row,
@@ -86,7 +86,7 @@ export default function Sell() {
         },
       });
     } else {
-      await window.api.call('buy.insert', {
+      await window.api.call('sell.insert', {
         ...row,
         sell_date: dayjs(row.sell_date).format('YYYY-MM-DD'),
       });
